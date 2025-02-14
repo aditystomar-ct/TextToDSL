@@ -1,0 +1,694 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Statement",
+    "type": "object",
+    "oneOf": [
+        {
+            "$ref": "#/definitions/Select"
+        }
+    ],
+    "definitions": {
+        "Statement": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/Select"
+                }
+            ]
+        },
+        "Field": {
+            "type": "object",
+            "properties": {
+                "dataType": {
+                    "$ref": "#/definitions/DataType"
+                },
+                "alias": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "sig": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/Constant"
+                },
+                {
+                    "$ref": "#/definitions/ConstantArray"
+                },
+                {
+                    "$ref": "#/definitions/SecuredField"
+                },
+                {
+                    "$ref": "#/definitions/Function"
+                },
+                {
+                    "$ref": "#/definitions/Custom"
+                },
+                {
+                    "$ref": "#/definitions/SubSelect"
+                },
+                {
+                    "$ref": "#/definitions/Table"
+                },
+                {
+                    "$ref": "#/definitions/TableFunction"
+                },
+                {
+                    "$ref": "#/definitions/Template"
+                },
+                {
+                    "$ref": "#/definitions/Column"
+                },
+                {
+                    "$ref": "#/definitions/Predicate"
+                },
+                {
+                    "$ref": "#/definitions/Encapsulate"
+                },
+                {
+                    "$ref": "#/definitions/CustomExpression"
+                }
+            ]
+        },
+        "Constant": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$CONSTANT"
+                },
+                "value": {
+                    "type": [
+                        "boolean",
+                        "integer",
+                        "null",
+                        "number",
+                        "object",
+                        "string"
+                    ]
+                }
+            }
+        },
+        "ConstantArray": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$CONSTANT_ARRAY"
+                },
+                "values": {
+                    "$ref": "#/definitions/ObjectValues"
+                }
+            }
+        },
+        "SecuredField": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$SECURED"
+                },
+                "field": {
+                    "$ref": "#/definitions/Field"
+                }
+            }
+        },
+        "Function": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$FUNCTION"
+                },
+                "operation": {
+                    "$ref": "#/definitions/Operation"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Field"
+                    }
+                }
+            }
+        },
+        "Custom": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$CUSTOM"
+                },
+                "sql": {
+                    "type": "string"
+                }
+            }
+        },
+        "SubSelect": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$SUB_SELECT"
+                },
+                "select": {
+                    "$ref": "#/definitions/Statement"
+                }
+            }
+        },
+        "Table": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$TABLE"
+                },
+                "tableName": {
+                    "type": "string"
+                },
+                "fullyQualifiedName": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "TableFunction": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$TABLE_FUNCTION"
+                },
+                "function": {
+                    "type": "string"
+                }
+            }
+        },
+        "Template": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$TEMPLATE"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "templateType": {
+                    "$ref": "#/definitions/TemplateType"
+                }
+            }
+        },
+        "Column": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$COLUMN"
+                },
+                "columnName": {
+                    "type": "string"
+                },
+                "tableAlias": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            }
+        },
+        "Select": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "SELECT"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Field"
+                    }
+                },
+                "from": {
+                    "$ref": "#/definitions/Source"
+                },
+                "join": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Join"
+                    }
+                },
+                "where": {
+                    "$ref": "#/definitions/Where"
+                },
+                "groupBy": {
+                    "$ref": "#/definitions/GroupBy"
+                },
+                "having": {
+                    "$ref": "#/definitions/Having"
+                },
+                "orderBy": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/OrderBy"
+                    }
+                },
+                "limit": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "offset": {
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "Source": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/Table"
+                },
+                {
+                    "$ref": "#/definitions/TableFunction"
+                },
+                {
+                    "$ref": "#/definitions/Template"
+                },
+                {
+                    "$ref": "#/definitions/Custom"
+                },
+                {
+                    "$ref": "#/definitions/SubSelect"
+                }
+            ]
+        },
+        "Sink": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/Table"
+                },
+                {
+                    "$ref": "#/definitions/TableFunction"
+                },
+                {
+                    "$ref": "#/definitions/Template"
+                },
+                {
+                    "$ref": "#/definitions/Custom"
+                }
+            ]
+        },
+        "Where": {
+            "type": "object",
+            "properties": {
+                "clause": {
+                    "const": "$WHERE"
+                },
+                "filter": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Expression"
+                    }
+                }
+            }
+        },
+        "Having": {
+            "type": "object",
+            "properties": {
+                "clause": {
+                    "const": "$HAVING"
+                },
+                "filter": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Expression"
+                    }
+                }
+            }
+        },
+        "Set": {
+            "type": "object",
+            "properties": {
+                "clause": {
+                    "const": "$SET"
+                },
+                "columnValueMappings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ColumnValueMapping"
+                    }
+                }
+            }
+        },
+        "Join": {
+            "type": "object",
+            "properties": {
+                "clause": {
+                    "const": "$JOIN"
+                },
+                "source": {
+                    "$ref": "#/definitions/Source"
+                },
+                "on": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Expression"
+                    }
+                },
+                "joinType": {
+                    "type": "string",
+                    "enum": [
+                        "INNER_JOIN",
+                        "CROSS_JOIN",
+                        "LEFT_OUTER_JOIN",
+                        "RIGHT_OUTER_JOIN",
+                        "FULL_OUTER_JOIN",
+                        "NATURAL_JOIN",
+                        "NATURAL_LEFT_OUTER_JOIN",
+                        "NATURAL_RIGHT_OUTER_JOIN",
+                        "NATURAL_FULL_OUTER_JOIN",
+                        "CROSS_APPLY",
+                        "OUTER_APPLY",
+                        "STRAIGHT_JOIN",
+                        "LEFT_SEMI_JOIN",
+                        "LEFT_ANTI_JOIN"
+                    ]
+                }
+            }
+        },
+        "GroupBy": {
+            "type": "object",
+            "properties": {
+                "clause": {
+                    "const": "$GROUP_BY"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Field"
+                    }
+                }
+            }
+        },
+        "OrderBy": {
+            "type": "object",
+            "properties": {
+                "clause": {
+                    "const": "$ORDER_BY"
+                },
+                "field": {
+                    "$ref": "#/definitions/Field"
+                },
+                "direction": {
+                    "$ref": "#/definitions/Direction"
+                }
+            }
+        },
+        "PivotOn": {
+            "type": "object",
+            "properties": {
+                "clause": {
+                    "const": "$PIVOT_ON"
+                },
+                "field": {
+                    "$ref": "#/definitions/Field"
+                },
+                "values": {
+                    "$ref": "#/definitions/ObjectValues"
+                }
+            }
+        },
+        "PivotUsing": {
+            "type": "object",
+            "properties": {
+                "clause": {
+                    "const": "$PIVOT_USING"
+                },
+                "operation": {
+                    "$ref": "#/definitions/AggregateOp"
+                },
+                "field": {
+                    "$ref": "#/definitions/Field"
+                },
+                "aliasPrefix": {
+                    "type": "string"
+                }
+            }
+        },
+        "Predicate": {
+            "type": "object",
+            "properties": {
+                "exp": {
+                    "const": "$FILTER"
+                },
+                "logicalOp": {
+                    "$ref": "#/definitions/LogicalOp"
+                },
+                "lhs": {
+                    "$ref": "#/definitions/Field"
+                },
+                "comparisonOp": {
+                    "$ref": "#/definitions/ComparisonOp"
+                },
+                "rhs": {
+                    "$ref": "#/definitions/Field"
+                }
+            }
+        },
+        "Encapsulate": {
+            "type": "object",
+            "properties": {
+                "exp": {
+                    "const": "$ENCAPSULATE"
+                },
+                "logicalOp": {
+                    "$ref": "#/definitions/LogicalOp"
+                },
+                "filters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Expression"
+                    }
+                }
+            }
+        },
+        "CustomExpression": {
+            "type": "object",
+            "properties": {
+                "exp": {
+                    "const": "$CUSTOM_EXP"
+                },
+                "logicalOp": {
+                    "$ref": "#/definitions/LogicalOp"
+                },
+                "sqlExpression": {
+                    "type": "string"
+                }
+            }
+        },
+        "ColumnValueMapping": {
+            "type": "object",
+            "properties": {
+                "column": {
+                    "$ref": "#/definitions/Column"
+                },
+                "value": {
+                    "$ref": "#/definitions/Field"
+                }
+            }
+        },
+        "Expression": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/Predicate"
+                },
+                {
+                    "$ref": "#/definitions/Encapsulate"
+                },
+                {
+                    "$ref": "#/definitions/CustomExpression"
+                }
+            ]
+        },
+        "ComparisonOp": {
+            "type": "string",
+            "enum": [
+                "EQ",
+                "GT",
+                "GTE",
+                "LT",
+                "LTE",
+                "NE",
+                "LIKE",
+                "I_LIKE",
+                "NOT_I_LIKE",
+                "NOT_LIKE",
+                "IS_NULL",
+                "NOT_NULL",
+                "IN",
+                "I_IN",
+                "NOT_IN",
+                "NOT_I_IN",
+                "BETWEEN"
+            ]
+        },
+        "LogicalOp": {
+            "type": "string",
+            "enum": [
+                "AND",
+                "OR",
+                "NOT"
+            ]
+        },
+        "AggregateOp": {
+            "type": "string",
+            "enum": [
+                "COUNT",
+                "DISTINCT_COUNT",
+                "DISTINCT",
+                "MAX",
+                "MIN",
+                "SUM",
+                "AVG",
+                "ANY"
+            ]
+        },
+        "ConditionalOp": {
+            "type": "string",
+            "enum": [
+                "IF_ELSE",
+                "COALESCE",
+                "NULLIF"
+            ]
+        },
+        "ArithmeticOp": {
+            "type": "string",
+            "enum": [
+                "ADD",
+                "SUB",
+                "MULTIPLY",
+                "MOD",
+                "FLOOR",
+                "ABS",
+                "CEIL",
+                "ROUND"
+            ]
+        },
+        "ObjectValues": {
+            "type": "array",
+            "items": {
+                "type": [
+                    "boolean",
+                    "integer",
+                    "null",
+                    "number",
+                    "object",
+                    "string"
+                ]
+            }
+        },
+        "ConditionalOperation": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$CONDITION"
+                },
+                "op": {
+                    "$ref": "#/definitions/ConditionalOp"
+                }
+            }
+        },
+        "LogicalOperation": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$LOGICAL"
+                },
+                "op": {
+                    "$ref": "#/definitions/LogicalOp"
+                }
+            }
+        },
+        "ComparisonOperation": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$COMPARISON"
+                },
+                "op": {
+                    "$ref": "#/definitions/ComparisonOp"
+                }
+            }
+        },
+        "AggregateOperation": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$AGGREGATE"
+                },
+                "op": {
+                    "$ref": "#/definitions/AggregateOp"
+                }
+            }
+        },
+        "ArithmeticOperation": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "$ARITHMETIC"
+                },
+                "op": {
+                    "$ref": "#/definitions/ArithmeticOp"
+                }
+            }
+        },
+        "TemplateType": {
+            "type": "string",
+            "enum": [
+                "QUERY",
+                "TABLE",
+                "VIEW"
+            ]
+        },
+        "Direction": {
+            "type": "string",
+            "enum": [
+                "ASC",
+                "DESC"
+            ]
+        },
+        "DataType": {
+            "type": "string",
+            "enum": [
+                "INTEGER",
+                "DECIMAL",
+                "BIG_DECIMAL",
+                "STRING",
+                "DATE",
+                "TIMESTAMP",
+                "BOOLEAN",
+                "ARRAY_STRING",
+                "ARRAY_DECIMAL",
+                "ARRAY",
+                "UNKNOWN"
+            ]
+        },
+        "Operation": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/ConditionalOperation"
+                },
+                {
+                    "$ref": "#/definitions/LogicalOperation"
+                },
+                {
+                    "$ref": "#/definitions/ComparisonOperation"
+                },
+                {
+                    "$ref": "#/definitions/AggregateOperation"
+                },
+                {
+                    "$ref": "#/definitions/ArithmeticOperation"
+                }
+            ]
+        }
+    }
+}
