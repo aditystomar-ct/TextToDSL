@@ -9,7 +9,7 @@ import requests
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-print(openai.api_key)
+# print(openai.api_key)
 if openai.api_key is None:
     raise ValueError(
         "OpenAI API key not found. Please set the OPENAI_API_KEY environment variable."
@@ -467,6 +467,8 @@ headers = {
 
 database_schema = fetch_database_schema(url, headers)
 print(database_schema)
+
+
 # # Make the GET request
 # response = requests.get(url, headers=headers)
 
@@ -577,6 +579,9 @@ Here are some examples to guide you:
 ### Database Schema
 Below is the schema of the database you should use to generate the DSL query:
 {db_schema}
+
+
+
 
 
 
