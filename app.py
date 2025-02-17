@@ -20,17 +20,6 @@ with open("dsl_schema.json", "r") as file:
 
 
 # print(dsl_schema)
-# def summarize_schema(schema):
-#     definitions = schema.get('definitions', {})
-#     summary = []
-#     for key, value in definitions.items():
-#         summary.append(f"{key}: {value.get('type')}")
-#     return '\n'.join(summary)
-
-# schema_summary=summarize_schema(dsl_schema)
-
-# print("schema_summary:", schema_summary)
-# print("Type of schema_summary:", type(schema_summary))
 
 # Define example prompts and schemas
 examples = [
@@ -456,13 +445,14 @@ def fetch_database_schema(api_url, headers):
 
 
 # API Endpoint
-url = "https://app-qa-http.clear.in/api/clear/data-browser/public/v2/config?data_type=GL&component_type=VIEW&idempotent-key=GL"
+url = "http://clear-data-browser-dev-http.internal.cleartax.co/api/clear/data-browser/internal/v2/config?data_type=GL&component_type=VIEW&idempotent-key=GL"
 # Headers (provided by your project manager)
 headers = {
-    "x-organisation-id": "4b6f72cc-5fd5-4c69-8e3e-e24d9ec520ff",  # Replace with actual org ID
+    "x-organisation-id": "6262cffd-35a8-4d20-a42b-e8f2edc17ef7",  # Replace with actual org ID
     "x-tenant-name": "GL_STREAM",  # Replace with actual workspace ID
-    "x-workspace-id": "c020457f-f46e-4b22-8a41-a2c52e80a58b",  # Replace with the correct session ID
-    "cookie": 'ctLangPreference=eng_IND; ssoAnonId=cc51cbfc-4768-4ce1-b25a-2bb59f1f4037; ssoAId=f2b05618-60d1-40f4-a313-924e3d7c4f41; sid=3.ceca36b8-bb52-4575-a9f8-2325c30b5c2e_ca1528b28ec0282d8f48b66a40a7b6b02403aad2809b9693931ab9e448e22be8;"whtofr3tg9";_dd_s=logs=1&id=e934f3cd-dbf4-4231-8ec7-12982acc3036&created=1739559527500&expire=1739560427500',
+    "x-workspace-id": "94361894-de11-4424-92f0-7cc12e589f4b",  # Replace with the correct session ID
+    # "cookie": 'ctLangPreference=eng_IND; ssoAnonId=cc51cbfc-4768-4ce1-b25a-2bb59f1f4037; ssoAId=f2b05618-60d1-40f4-a313-924e3d7c4f41; sid=3.ceca36b8-bb52-4575-a9f8-2325c30b5c2e_ca1528b28ec0282d8f48b66a40a7b6b02403aad2809b9693931ab9e448e22be8;"whtofr3tg9";_dd_s=logs=1&id=e934f3cd-dbf4-4231-8ec7-12982acc3036&created=1739559527500&expire=1739560427500',
+    "x-clear-internal-api-Key":"e8720afc-f572-11ed-a05b-0242ac120003",
 }
 
 database_schema = fetch_database_schema(url, headers)
@@ -532,23 +522,6 @@ print(database_schema)
 # | billingdocumenttype              | VARCHAR              | YES          | Type of billing document (e.g., Invoice, Credit Note, etc.).                                            |
 # """
 
-
-# def generate_dsl_from_prompt(user_input, prompt_template):
-#     try:
-#         # Using GPT-4 model for chat completion
-#         response = openai.chat.completions.create(model="gpt-4",  # Specify the GPT-4 model
-#         messages=[{"role": "system", "content": prompt_template.replace("{user_input}", user_input)}],
-#         max_tokens=500,
-#         temperature=0)
-
-#         # Extract and pretty print the content of the response
-#         generated_text = response.choices[0].message.content
-#         return json.dumps(json.loads(generated_text), indent=4)
-
-#     except Exception as e:
-#         print(f"Error: {e}")
-#
-#         return None
 
 
 # Define the new prompt template
@@ -682,7 +655,3 @@ if submit:
 # # Output the result
 # print("Generated DSL Query:")
 # print(generated_dsl_query)
-
-
-
-
