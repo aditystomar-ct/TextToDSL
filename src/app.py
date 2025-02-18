@@ -55,8 +55,8 @@ examples = [
                 ],
                 "from": {
                     "source": "$TEMPLATE",
-                    "id": "6703ecb8e2673e3def296a30",
-                    "templateType": "VIEW",
+                    "id": "table_id",  # This will be replaced dynamically with source_info's `id`
+                    "templateType": "template_type",  # This will be replaced dynamically too
                 },
                 "where": None,
                 "orderBy": None,
@@ -86,8 +86,8 @@ examples = [
                 ],
                 "from": {
                     "source": "$TEMPLATE",
-                    "id": "6703ecb8e2673e3def296a30",
-                    "templateType": "VIEW",
+                    "id": "table_id",  # This will be replaced dynamically with source_info's `id`
+                    "templateType": "template_type",  # This will be replaced dynamically too
                 },
                 "where": {
                     "clause": "$WHERE",
@@ -141,8 +141,8 @@ examples = [
                 ],
                 "from": {
                     "source": "$TEMPLATE",
-                    "id": "6703ecb8e2673e3def296a30",
-                    "templateType": "VIEW",
+                    "id": "table_id",  # This will be replaced dynamically with source_info's `id`
+                    "templateType": "template_type",  # This will be replaced dynamically too
                 },
                 "where": None,
                 "orderBy": None,
@@ -172,8 +172,8 @@ examples = [
                 ],
                 "from": {
                     "source": "$TEMPLATE",
-                    "id": "6703ecb8e2673e3def296a30",
-                    "templateType": "VIEW",
+                    "id": "table_id",  # This will be replaced dynamically with source_info's `id`
+                    "templateType": "template_type",  # This will be replaced dynamically too
                 },
                 "where": {
                     "clause": "$WHERE",
@@ -233,8 +233,8 @@ examples = [
                 ],
                 "from": {
                     "source": "$TEMPLATE",
-                    "id": "6703ecb8e2673e3def296a30",
-                    "templateType": "VIEW",
+                    "id": "table_id",  # This will be replaced dynamically with source_info's `id`
+                    "templateType": "template_type",  # This will be replaced dynamically too
                 },
                 "where": None,
                 "groupBy": {
@@ -254,8 +254,8 @@ examples = [
                 "fields": [{"type": "$COLUMN", "columnName": "*"}],
                 "from": {
                     "source": "$TEMPLATE",
-                    "id": "6703ecb8e2673e3def296a30",
-                    "templateType": "VIEW",
+                    "id": "table_id",  # This will be replaced dynamically with source_info's `id`
+                    "templateType": "template_type",  # This will be replaced dynamically too
                 },
                 "where": None,
                 "orderBy": [
@@ -278,8 +278,8 @@ examples = [
                 "fields": [{"type": "$COLUMN", "columnName": "*"}],
                 "from": {
                     "source": "$TEMPLATE",
-                    "id": "6703ecb8e2673e3def296a30",
-                    "templateType": "VIEW",
+                    "id": "table_id",  # This will be replaced dynamically with source_info's `id`
+                    "templateType": "template_type",  # This will be replaced dynamically too
                 },
                 "where": {
                     "clause": "$WHERE",
@@ -407,6 +407,13 @@ examples = [
     },
 ]
 
+source_info = {
+    "from": {
+        "source": "$TEMPLATE",
+        "id": "6703ecb8e2673e3def296a30",  # Replace with a dynamically generated or predefined ID
+        "templateType": "VIEW",  # This indicates the template type (e.g., VIEW or TABLE)
+    }
+}
 
 def fetch_database_schema(api_url, headers):
     try:
@@ -555,6 +562,10 @@ DSL_Schema Summary:
 {dsl_schema}
 
 
+### Source Information:
+{source_info}
+
+
 ### Example Prompts and Corresponding DSL Queries
 Here are some examples to guide you:
 {examples}
@@ -566,6 +577,9 @@ Below is the schema of the database you should use to generate the DSL query:
 ### Tasks
 - Use the database schema to ensure your DSL query is valid.
 - Refer to the examples as guidance for how the DSL results should be structured.
+- Always include the `from` metadata in the DSL query using the information provided in `source_info`.
+- If there is an `id` or `templateType` in `source_info`, add them accordingly in the final DSL output.
+- Ensure the final output includes the `from` block.
 - Return the DSL query in JSON format, and ensure it is well-indented and easy to read and write comma in the json  where required
 ### Completion Objective:
 - Validity: Ensure the DSL query conforms to database specifications and operational semantics.
@@ -582,15 +596,17 @@ db_schema = database_schema  # Use the database schema as is
 
 
 def generate_dsl_from_prompt(
-    user_input, examples, database_schema, prompt_template, dsl_schema
+    user_input, examples, database_schema, prompt_template, dsl_schema,source_info
 ):
     try:
         # Fill the placeholders in the prompt
+        source_info_str = json.dumps(source_info, indent=4)
         filled_prompt = prompt_template.format(
             user_input=user_input,
             examples=examples,
             db_schema=database_schema,
             dsl_schema=dsl_schema,
+            source_info=source_info_str,
         )
         # print("in the function")
         # Using GPT-4 model for chat completion
@@ -638,6 +654,7 @@ if submit:
         database_schema=database_schema,
         prompt_template=prompt,
         dsl_schema=dsl_schema,
+        source_info=source_info
     )
 
     # Output the result
