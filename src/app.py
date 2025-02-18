@@ -15,8 +15,19 @@ if openai.api_key is None:
         "OpenAI API key not found. Please set the OPENAI_API_KEY environment variable."
     )
 
-with open("dsl_schema.json", "r") as file:
+# with open("dsl_schema.json", "r") as file:
+#     dsl_schema = json.load(file)
+
+script_dir = os.path.dirname(__file__)
+
+# Construct the path to dsl_schema.json located in the same directory as app.py
+dsl_schema_path = os.path.join(script_dir, "dsl_schema.json")
+
+# Open and load the JSON schema
+with open(dsl_schema_path, "r") as file:
     dsl_schema = json.load(file)
+
+# print(dsl_schema)
 
 
 # print(dsl_schema)
@@ -403,7 +414,7 @@ def fetch_database_schema(api_url, headers):
         response = requests.get(api_url, headers=headers)
         response.raise_for_status()  # Raise an error for HTTP codes 4xx/5xx
         data = response.json()
-        print("Database_Schema Base function")
+        # print("Database_Schema Base function")
 
         # Ensure 'columnConfigs' exists in response
         if "columnConfigs" not in data:
@@ -456,7 +467,7 @@ headers = {
 }
 
 database_schema = fetch_database_schema(url, headers)
-print(database_schema)
+# print(database_schema)
 
 
 # # Make the GET request
@@ -523,7 +534,6 @@ print(database_schema)
 # """
 
 
-
 # Define the new prompt template
 prompt = """
 You are an expert in creating Domain-Specific Language (DSL) queries for complex tasks. 
@@ -552,12 +562,6 @@ Here are some examples to guide you:
 ### Database Schema
 Below is the schema of the database you should use to generate the DSL query:
 {db_schema}
-
-
-
-
-
-
 
 ### Tasks
 - Use the database schema to ensure your DSL query is valid.
@@ -588,7 +592,7 @@ def generate_dsl_from_prompt(
             db_schema=database_schema,
             dsl_schema=dsl_schema,
         )
-        print("in the function")
+        # print("in the function")
         # Using GPT-4 model for chat completion
         response = openai.chat.completions.create(
             model="gpt-4o",  # Specify the GPT-4 model
@@ -627,7 +631,7 @@ submit = st.button("Ask")
 
 # Process the input when submit button is clicked
 if submit:
-    print("Input Question:", question)
+    # print("Input Question:", question)
     generated_dsl_query = generate_dsl_from_prompt(
         user_input=question,
         examples=examples_json,
@@ -637,7 +641,7 @@ if submit:
     )
 
     # Output the result
-    print("Generated DSL Query:")
+    # print("Generated DSL Query:")
     print(generated_dsl_query)
     st.subheader("Generated SQL Query:")
     st.code(generated_dsl_query, language="sql")
