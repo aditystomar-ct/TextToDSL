@@ -5,6 +5,7 @@ from src.app import (
     database_schema,
     prompt,
     dsl_schema,
+    source_info
 )
 import json
 
@@ -51,6 +52,7 @@ def test_generate_dsl_simple_query():
         database_schema=database_schema,
         prompt_template=prompt,
         dsl_schema=dsl_schema,
+        source_info=source_info
     )
 
     # Normalize both JSON results
@@ -131,6 +133,7 @@ def test_generate_dsl_with_date_filter():
         database_schema=database_schema,
         prompt_template=prompt,
         dsl_schema=dsl_schema,
+        source_info=source_info
     )
 
     # Normalize both JSON results
